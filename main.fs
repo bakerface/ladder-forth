@@ -1,5 +1,3 @@
-#! /usr/bin/env gforth
-
 include l5k.fs
 
 ( INPUTS )

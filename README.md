@@ -16,25 +16,40 @@ VARIABLE STOP
 
 ( OUTPUTS )
 VARIABLE MOTOR
+VARIABLE FAN
 
 ( LOCALS )
 VARIABLE RUN
+TIMER FAN_TIMER
 
 LADDER: MOTOR_ROUTINE
-||                                                       ||
-||   STOP           START                          RUN   ||
-||---]/[---------+---] [---+-----------------------( )---||
-||               |         |                             ||
-||               |   RUN   |                             ||
-||               +---] [---+                             ||
-||                                                       ||
-||   RUN                                          MOTOR  ||
-||---] [-------------------------------------------( )---||
-||                                                       ||
+||                                                                    ||
+||   STOP           START          +------------------+         RUN   ||
+||---]/[---------+---] [---+-------|       TOF        |---------( )---||
+||               |         |       |                  |               ||
+||               |   RUN   |       | TIMER  FAN_TIMER |               ||
+||               +---] [---+       | PRE         T#3s |               ||
+||                                 |                  |               ||
+||                                 +------------------+               ||
+||                                                                    ||
+||   RUN                                                       MOTOR  ||
+||---] [--------------------------------------------------------( )---||
+||                                                                    ||
+||                                                                    ||
+|| FAN_TIMER.DN                                                 FAN   ||
+||---] [--------------------------------------------------------( )---||
+||                                                                    ||
 
 SEE MOTOR_ROUTINE
 \ : MOTOR_ROUTINE
-\   R: STOP XIO R[ START XIC R, RUN XIC R] RUN OTE R; R: RUN XIC MOTOR OTE R; ;
+\   R: STOP XIO
+\      R[ START XIC R, RUN XIC R]
+\      3000 FAN_TIMER.ACC FAN_TIMER.TT FAN_TIMER.EN FAN_TIMER.DN TOF
+\      RUN OTE
+\   R;
+\   R: RUN XIC MOTOR OTE R;
+\   R: FAN_TIMER.DN XIC FAN OTE R;
+\ ;
 
 MOTOR_ROUTINE
 MOTOR ? ( 0 )
