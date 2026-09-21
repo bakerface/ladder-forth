@@ -1,4 +1,4 @@
-# ladder-forth
+# LADDER: Forth
 **A PLC Ladder Logic compiler and runtime in Forth**
 
 ### Overview
